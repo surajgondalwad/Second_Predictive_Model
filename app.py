@@ -4,8 +4,8 @@ import numpy as np
 
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(
-    page_title="ML Prediction App",
-    page_icon="🤖",
+    page_title="Diabetes Prediction App",
+    page_icon="🩺",
     layout="centered"
 )
 
@@ -13,18 +13,18 @@ st.set_page_config(
 st.markdown("""
     <style>
     .main {
-        background: linear-gradient(to right, #667eea, #764ba2);
+        background: linear-gradient(to right, #4facfe, #00f2fe);
         color: white;
     }
     .stButton>button {
-        background-color: #ff4b4b;
+        background-color: #ff6b6b;
         color: white;
         border-radius: 10px;
         height: 3em;
         width: 100%;
         font-size: 18px;
     }
-    .stTextInput>div>div>input {
+    .stNumberInput input {
         border-radius: 10px;
     }
     </style>
@@ -40,49 +40,49 @@ def load_model():
 model = load_model()
 
 # -------------------- HEADER --------------------
-st.markdown("<h1 style='text-align: center;'>🤖 ML Prediction App</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Simple, Fast & Clean Prediction Tool</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🩺 Diabetes Prediction System</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Predict Diabetes Risk using Machine Learning</p>", unsafe_allow_html=True)
 
 st.divider()
 
 # -------------------- INPUT SECTION --------------------
-st.subheader("🔢 Enter Input Features")
+st.subheader("📋 Enter Patient Details")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    feature1 = st.number_input("Feature 1", value=0.0)
-    feature2 = st.number_input("Feature 2", value=0.0)
+    pregnancies = st.number_input("Pregnancies", min_value=0, step=1)
+    glucose = st.number_input("Glucose Level", min_value=0)
+    blood_pressure = st.number_input("Blood Pressure", min_value=0)
+    skin_thickness = st.number_input("Skin Thickness", min_value=0)
 
 with col2:
-    feature3 = st.number_input("Feature 3", value=0.0)
-    feature4 = st.number_input("Feature 4", value=0.0)
+    insulin = st.number_input("Insulin Level", min_value=0)
+    bmi = st.number_input("BMI", min_value=0.0)
+    dpf = st.number_input("Diabetes Pedigree Function", min_value=0.0)
+    age = st.number_input("Age", min_value=1, step=1)
 
-# Add/remove features based on your model
-
-# -------------------- PREDICTION --------------------
 st.divider()
 
-if st.button("🚀 Predict"):
+# -------------------- PREDICTION --------------------
+if st.button("🔍 Predict Diabetes"):
     try:
-        input_data = np.array([[feature1, feature2, feature3, feature4]])
+        input_data = np.array([[pregnancies, glucose, blood_pressure,
+                                skin_thickness, insulin, bmi, dpf, age]])
+
         prediction = model.predict(input_data)
 
-        st.success("✅ Prediction Complete!")
-
-        # Animation-like effect
-        with st.spinner("Analyzing data..."):
+        with st.spinner("Analyzing patient data..."):
             st.balloons()
 
-        st.markdown(f"""
-        <h2 style='text-align: center; color: #00ffcc;'>
-        🎯 Result: {prediction[0]}
-        </h2>
-        """, unsafe_allow_html=True)
+        if prediction[0] == 1:
+            st.error("⚠️ High Risk of Diabetes")
+        else:
+            st.success("✅ Low Risk of Diabetes")
 
     except Exception as e:
-        st.error(f"❌ Error: {e}")
+        st.error(f"Error: {e}")
 
 # -------------------- FOOTER --------------------
 st.markdown("---")
-st.markdown("<p style='text-align: center;'>Made with ❤️ using Streamlit</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>⚡ Built with Streamlit | ML Project</p>", unsafe_allow_html=True)
